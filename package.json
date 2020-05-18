@@ -1,0 +1,24 @@
+{
+  "name": "employee_tracker_mysql",
+  "version": "1.0.0",
+  "description": "An app to take employee input on CLI and display the employe and managers in a table format.This app will be able to add and update employee information.",
+  "main": "node index.js",
+  "dependencies": {
+    "inquirer": "^7.1.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sabahsyed/Employee_Tracker_MySQL.git"
+  },
+  "author": "Sabah Syed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sabahsyed/Employee_Tracker_MySQL/issues"
+  },
+  "homepage": "https://github.com/sabahsyed/Employee_Tracker_MySQL#readme"
+}
