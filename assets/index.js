@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-const cTable = require('console.table');
+const cTable = require("console.table");
 
 
 var connection = mysql.createConnection({
@@ -45,10 +45,10 @@ var connection = mysql.createConnection({
                     viewAllEmployees();
                     break;
                 case "View all Employee by Department":
-                    viewEmployeesByDept();
+                     viewEmployeesByDept();
                     break;
                 case "View all Employees by Manager":
-                    viewEmployeesByManager();
+                     viewEmployeesByManager();
                     break;
                 case "Add Employee":
                     addEmployee();
@@ -80,20 +80,81 @@ function addEmployee(){
     })
     .then(function(answer){
         switch(answer.action){
+            // Add Employee
             case "Add Employee":
+                inquirer.prompt([
+                {
+                    name: "fname",
+                    type : "input",
+                    message  : " What is Employee's first name ?"
+                },
+                {
+                    name: "lname",
+                    type : "input",
+                    message  : " What is Employee's last name ?"
+                }
+                ])
+                .then(function(answer){
+                    connection.query(
+                        "INSERT INTO employee SET ?",
+                        {
+                            //Left hand side of colon is the column name in table
+                          first_name: answer.fname,
+                          last_name: answer.lname,
+                        },
+                    function (err) {  
+                    if (err) throw err;  
+                    console.log("1 record inserted into Employee as Employee");  
+                    }
+                ); 
+      
+      
+                })
+                .catch(error => {
+                    if(error) {
+                      console.log("Error");
+                    }
+                });
+                break;
+                // var sql = "INSERT INTO employee(first_name, last_name) VALUES ('Sabah Syed','Bangalore')";  
+                // connection.query(sql, function (err, result) {  
+                // if (err) throw err;  
+                // console.log("1 record inserted into Employee as Employee");  
+                // });  
 
-                var sql = "INSERT INTO employee(first_name, last_name) VALUES ('Sabah Syed','Bangalore')";  
-                connection.query(sql, function (err, result) {  
-                if (err) throw err;  
-                console.log("1 record inserted into Employee as Employee");  
-                });  
+            //Add Manager
             case "Add Manager":
-
-                var sql = "INSERT INTO employee(first_name, last_name) VALUES ('Sabah Syed','Bangalore')";  
-                connection.query(sql, function (err, result) {  
-                if (err) throw err;  
-                console.log("1 record inserted into Employee as Manager");  
-                });  
+                inquirer.prompt([
+                {
+                    name: "fname",
+                    type : "input",
+                    message  : " What is Manager's first name ?",
+                },
+                {
+                    name: "lname",
+                    type : "input",
+                    message  : " What is Manager's last name ?",
+                }
+                ])
+                .then(function(answer){
+                    //var sql = "INSERT INTO employee(first_name, last_name) VALUES" (first_name, last_name);  
+                    connection.query(
+                        "INSERT INTO employee SET ?",
+                        {
+                            //Left hand side of colon is the column name in table
+                          first_name: answer.fname,
+                          last_name: answer.lname,
+                        },
+                    function (err) {  
+                    if (err) throw err;  
+                    console.log("1 record inserted into Employee as Manager");  
+                    }
+                ); 
+      
+                });
+                break;
+            case "Exit":
+                connection.end(); 
             }
         });
     }
