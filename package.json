@@ -4,6 +4,7 @@
   "description": "An app to take employee input on CLI and display the employe and managers in a table format.This app will be able to add and update employee information.",
   "main": "node index.js",
   "dependencies": {
+    "console.table": "^0.10.0",
     "inquirer": "^7.1.0",
     "mysql": "^2.18.1"
   },
