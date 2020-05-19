@@ -21,7 +21,6 @@ var connection = mysql.createConnection({
     if (err) throw err;
     console.log("Connection successful at id " +  connection.threadId);
     start();
-    connection.end();
 
   });
 
@@ -37,7 +36,7 @@ var connection = mysql.createConnection({
               "Add Employee",
               "Update Employee Role",
               "Update Employee Manager",
-              "exit"
+              "Exit"
           ] 
       })
       .then(function(answer){
@@ -82,17 +81,19 @@ function addEmployee(){
     .then(function(answer){
         switch(answer.action){
             case "Add Employee":
-            var sql = "INSERT INTO employee (first_name, last_name) VALUES?",('first_name', 'last_name')
-            connection.query(sql, function (err) {
-                if (err) throw err;
-                console.log("1 record inserted"); 
-            case "Add Manager":
-                var sql = "INSERT INTO employee (first_name, last_name) VALUES?",('first_name', 'last_name')
-                connection.query(sql, function (err) {
-                if (err) throw err;
-                 console.log("1 record inserted"); 
 
-        }
+                var sql = "INSERT INTO employee(first_name, last_name) VALUES ('Sabah Syed','Bangalore')";  
+                connection.query(sql, function (err, result) {  
+                if (err) throw err;  
+                console.log("1 record inserted into Employee as Employee");  
+                });  
+            case "Add Manager":
+
+                var sql = "INSERT INTO employee(first_name, last_name) VALUES ('Sabah Syed','Bangalore')";  
+                connection.query(sql, function (err, result) {  
+                if (err) throw err;  
+                console.log("1 record inserted into Employee as Manager");  
+                });  
+            }
+        });
     }
-});
-}
