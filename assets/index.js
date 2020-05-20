@@ -2,7 +2,7 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 const cTable = require("console.table");
 
-
+//Connecting to the SQL
 var connection = mysql.createConnection({
     host: "localhost",
   
@@ -92,7 +92,12 @@ function addEmployee(){
                     name: "lname",
                     type : "input",
                     message  : " What is Employee's last name ?"
-                }
+                },
+                {
+                    name : "deptName",
+                    text :"input",
+                    message : "What is the department name?"
+                },
                 ])
                 .then(function(answer){
                     connection.query(
@@ -101,6 +106,7 @@ function addEmployee(){
                             //Left hand side of colon is the column name in table
                           first_name: answer.fname,
                           last_name: answer.lname,
+                          department_name : answer.deptName
                         },
                     function (err) {  
                     if (err) throw err;  
@@ -157,4 +163,26 @@ function addEmployee(){
                 connection.end(); 
             }
         });
+    }
+
+    function viewAllEmployees(){
+        var query = "SELECT * FROM employee ";
+        connection.query(query, function(err,res){
+            if(err) throw err;
+            for(var i = 0 ; i<res.length ; i++){
+                console.table(
+                    [
+                        {
+                            id : res[i].id,
+                            FirstName : res[i].first_name,
+                            LastName : res[i].last_name,
+                            RoleId : res[i].role_id,
+                            ManagerId : res[i].manager_id,
+                            DepartmentName : res[i].department_name
+                        }
+                    ]
+                );
+            }
+        })
+        connection.end();
     }

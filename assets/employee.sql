@@ -24,6 +24,9 @@ Create table if not exists employee(
     last_name VARCHAR(30),
     role_id INT,
     manager_id INT NULL,
+	departmentName VARCHAR(30),
+    Foreign key (departmentName) REFERENCES department(name),
     Foreign key (manager_id)  REFERENCES employee(id) ON DELETE SET NULL , 
     Foreign key (role_id) REFERENCES role(id)
 );
+
