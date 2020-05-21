@@ -61,10 +61,10 @@ function start() {
                 case "Update Employee Manager":
                     updateEmployeeManager();
                     break;
-                case  "Add role":
+                case "Add role":
                     addRole();
                     break;
-                case  "Add Department":
+                case "Add Department":
                     addDept();
                     break;
 
@@ -75,7 +75,7 @@ function start() {
 
 }
 
-function addRole(){
+function addRole() {
     connection.query("SELECT name, id FROM department", function (err, res) {
         if (err) throw err;
         inquirer.prompt([
@@ -120,7 +120,7 @@ function addRole(){
     })
 }
 
-function addDept(){
+function addDept() {
     inquirer.prompt([
         {
             type: "input",
@@ -138,7 +138,7 @@ function addDept(){
             function (err, resTwo) {
                 if (err) throw err;
                 console.log("A new department has been added")
-                  
+
             }
         );
     });
@@ -155,129 +155,130 @@ function addEmployee() {
             "Exit"
         ]
     })
-    .then(function (answer) {
-        switch (answer.action) {
-            // Add Employee
-            case "Add Employee":
-                connection.query("SELECT * FROM employee", function (err, resEmp) {
-                    if (err) throw err;
-                    console.log(resEmp);
-                    addNewEmployee(resEmp);
-                    
-                });
-                break;
-
-            //Add Manager
-            case "Add Manager":
-                connection.query("SELECT * FROM employee", function (err, resEmp) {
-                    if (err) throw err;
-                    console.log(resEmp);
-                    addNewManager(resEmp);
-                });
-                break;
-            case "Exit":
-                connection.end();
-        }
-    });
-
-
-function addNewEmployee(resEmp){
-    inquirer.prompt([
-        {
-            name: "fname",
-            type: "input",
-            message: " What is Employee's first name ?"
-        },
-        {
-            name: "lname",
-            type: "input",
-            message: " What is Employee's last name ?"
-        },
-        {
-            name:"roleId",
-            typpe: "input",
-            message: "What is your roleID?"
-        },
-        {
-            name : "empManager",
-            type :"list",
-            message : "Who is the employee's manager?",
-            choices :resEmp.map(employee => {
-                return {
-                    name: employee.first_name + employee.last_name,
-                    value: employee.id
-                }
-            })
-        }
-        
-    ])
         .then(function (answer) {
-            console.log(answer.empManager);
-            connection.query(
-                "INSERT INTO employee SET ?",
-                {
-                    //Left hand side of colon is the column name in table
-                    first_name: answer.fname,
-                    last_name: answer.lname,
-                    manager_id : answer.empManager,
-                    role_id: answer.roleId
-                },
-                function (err) {
-                    if (err) throw err;
-                    console.log("1 record inserted into Employee as Employee");
-                }
-            );
+            switch (answer.action) {
+                // Add Employee
+                case "Add Employee":
+                    connection.query("SELECT * FROM employee", function (err, resEmp) {
+                        if (err) throw err;
+                        console.log(resEmp);
+                        addNewEmployee(resEmp);
 
+                    });
+                    break;
 
-        })
-        .catch(error => {
-            if (error) 
-                console.log("Error");
+                //Add Manager
+                case "Add Manager":
+                    connection.query("SELECT * FROM employee", function (err, resEmp) {
+                        if (err) throw err;
+                        console.log(resEmp);
+                        addNewManager(resEmp);
+                    });
+                    break;
+                case "Exit":
+                    connection.end();
+            }
         });
-}
-function addNewManager(resDept){
-    inquirer.prompt([
-    {
-        name: "fname",
-        type: "input",
-        message: " What is Manager's first name ?",
-    },
-    {
-        name: "lname",
-        type: "input",
-        message: " What is Manager's last name ?",
-    },
-    {
-        name: "deptName",
-        type: "list",
-        message: "What is the department name?",
-        choices: resDept.map(department => {
-            return {
-                name: department.name,
-                value: department.id
-            }
-        })
-    }
-])
-    .then(function (answer) {
-        //var sql = "INSERT INTO employee(first_name, last_name) VALUES" (first_name, last_name);  
-        connection.query(
-            "INSERT INTO employee SET ?",
+
+
+    function addNewEmployee(resEmp) {
+        inquirer.prompt([
             {
-                //Left hand side of colon is the column name in table
-                first_name: answer.fname,
-                last_name: answer.lname,
+                name: "fname",
+                type: "input",
+                message: " What is Employee's first name ?"
             },
-            function (err) {
-                if (err) throw err;
-                console.log("1 record inserted into Employee as Manager");
-                return 
+            {
+                name: "lname",
+                type: "input",
+                message: " What is Employee's last name ?"
+            },
+            {
+                name: "roleId",
+                typpe: "input",
+                message: "What is your roleID?"
+            },
+            {
+                name: "empManager",
+                type: "list",
+                message: "Who is the employee's manager?",
+                choices: resEmp.map(employee => {
+                    return {
+                        name: employee.first_name + employee.last_name,
+                        value: employee.id
+                    }
+                })
             }
-        );
 
-    });
-}
+        ])
+            .then(function (answer) {
+                console.log(answer.empManager);
+                connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                        //Left hand side of colon is the column name in table
+                        first_name: answer.fname,
+                        last_name: answer.lname,
+                        manager_id: answer.empManager,
+                        role_id: answer.roleId
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("1 record inserted into Employee as Employee");
+                    }
+                );
 
+
+            })
+            .catch(error => {
+                if (error)
+                    console.log("Error");
+            });
+    }
+    function addNewManager(resDept) {
+
+        console.log(resDept);
+        inquirer.prompt([
+            {
+                name: "fname",
+                type: "input",
+                message: " What is Manager's first name ?",
+            },
+            {
+                name: "lname",
+                type: "input",
+                message: " What is Manager's last name ?",
+            },
+            {
+                name: "deptName",
+                type: "list",
+                message: "What is the department name?",
+                choices:
+                    resDept.map(department => {
+                        return {
+                            name: department.name,
+                            value: department.id
+                        }
+                    })
+            }
+        ])
+            .then(function (answer) {
+                connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                        //Left hand side of colon is the column name in table
+                        first_name: answer.fname,
+                        last_name: answer.lname,
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("1 record inserted into Employee as Manager");
+                        return
+                    }
+                );
+
+            });
+    }
 }
 
 
@@ -305,7 +306,7 @@ function viewEmployeesByDept() {
 }
 
 
-function viewEmployeesByManager(){
+function viewEmployeesByManager() {
     var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.manager_id = employee.id LEFT JOIN department on employee.manager_id = employee.id";
     connection.query(query, function (err, res) {
         if (err) throw err;
@@ -316,16 +317,33 @@ function viewEmployeesByManager(){
 }
 
 
-function updateEmployeeRole(){
+function updateEmployeeRole() {
     inquirer.prompt([
         {
-            name :"update",
-            type : "input" ,
+            name: "update",
+            type: "input",
             message: "Enter employee id to update the role..."
         }
     ])
-    .then(function (answer) {
-        console.log(answer);
-});
+        .then(function (answer) {
+            console.log(answer);
+        });
 }
- 
+// function addDeptToManager() {
+//     var query = "SELECT NAME from DEPARTMENT";
+//     connection.query(query, function (err, res) {
+//         if (err) throw err;
+//             inquirer.prompt([
+//                 {
+//                     name: "deptName",
+//                     type: "list",
+//                     message: "Choose the department name.",
+//                     choices:
+//                         res.map(department => {
+//                         console.log(department)
+//                     })
+//                  }
+
+//             ])
+//     });  
+// }
