@@ -119,44 +119,66 @@ function addRole(){
         });
     })
 }
+
+function addDept(){
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "dept",
+            message: "What department would you like to add?",
+        },
+    ]).then(createPrompt => {
+        connection.query(
+            "INSERT INTO department SET ?",
+            [
+                {
+                    name: createPrompt.name
+                }
+            ],
+            function (err, resTwo) {
+                if (err) throw err;
+                console.log("A new department has been added")
+                  
+            }
+        );
+    });
+}
 //Function to add an employee
 function addEmployee() {
-    connection.query("SELECT first_name,last_name,id FROM employee", function (errOne, resEmp) {
-        if (errOne) throw errOne;
-        inquirer.prompt({
-            name: "action",
-            type: "list",
-            message: "What would you like to add ?",
-            choices: [
-                "Add Employee",
-                "Add Manager",
-                "Exit"
-            ]
-        })
-            .then(function (answer) {
-                switch (answer.action) {
-                    // Add Employee
-                    case "Add Employee":
-                        connection.query("SELECT * FROM employee", function (errOne, resEmp) {
-                            if (errOne) throw errOne;
-                            console.log(resEmp);
-                            addNewEmployee(resEmp);
-                        });
-                        break;
+    inquirer.prompt({
+        name: "action",
+        type: "list",
+        message: "What would you like to add ?",
+        choices: [
+            "Add Employee",
+            "Add Manager",
+            "Exit"
+        ]
+    })
+        .then(function (answer) {
+            switch (answer.action) {
+                // Add Employee
+                case "Add Employee":
+                    connection.query("SELECT * FROM employee", function (err, resEmp) {
+                        if (err) throw err;
+                        console.log(resEmp);
+                        addNewEmployee(resEmp);
+                    });
+                    break;
 
-                    //Add Manager
-                    case "Add Manager":
-                        connection.query("SELECT *FROM employee", function (errOne, resEmp) {
-                            if (errOne) throw errOne;
-                            console.log(resEmp);
-                            addNewManager(resEmp);
-                        });
-                        break;
-                    case "Exit":
-                        connection.end();
-                }
-            });
-    });
+                //Add Manager
+                case "Add Manager":
+                    connection.query("SELECT *FROM employee", function (err, resEmp) {
+                        if (err) throw err;
+                        console.log(resEmp);
+                        addNewManager(resEmp);
+                    });
+                    break;
+                case "Exit":
+                    connection.end();
+            }
+        });
+   // });
 }
 
 function viewAllEmployees() {
@@ -170,7 +192,18 @@ function viewAllEmployees() {
 }
 
 function viewEmployeesByDept() {
-    var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id";
+    var query = "SELECT department.name as department, employee.first_name, employee.last_name,role.title as title  from department LEFT JOIN role on department.id = role.department_id LEFT JOIN employee on employee.role_id = role.id;";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+    connection.end();
+}
+
+
+function viewEmployeesByManager(){
+    var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.manager_id = employee.id LEFT JOIN department on employee.manager_id = employee.id";
     connection.query(query, function (err, res) {
         if (err) throw err;
 
