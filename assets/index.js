@@ -155,62 +155,31 @@ function addEmployee() {
             "Exit"
         ]
     })
-        .then(function (answer) {
-            switch (answer.action) {
-                // Add Employee
-                case "Add Employee":
-                    connection.query("SELECT * FROM employee", function (err, resEmp) {
-                        if (err) throw err;
-                        console.log(resEmp);
-                        addNewEmployee(resEmp);
-                    });
-                    break;
+    .then(function (answer) {
+        switch (answer.action) {
+            // Add Employee
+            case "Add Employee":
+                connection.query("SELECT * FROM employee", function (err, resEmp) {
+                    if (err) throw err;
+                    console.log(resEmp);
+                    addNewEmployee(resEmp);
+                    
+                });
+                break;
 
-                //Add Manager
-                case "Add Manager":
-                    connection.query("SELECT *FROM employee", function (err, resEmp) {
-                        if (err) throw err;
-                        console.log(resEmp);
-                        addNewManager(resEmp);
-                    });
-                    break;
-                case "Exit":
-                    connection.end();
-            }
-        });
-   // });
-}
+            //Add Manager
+            case "Add Manager":
+                connection.query("SELECT * FROM employee", function (err, resEmp) {
+                    if (err) throw err;
+                    console.log(resEmp);
+                    addNewManager(resEmp);
+                });
+                break;
+            case "Exit":
+                connection.end();
+        }
+    });
 
-function viewAllEmployees() {
-    var query = "SELECT id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID FROM employee ";
-    connection.query(query, function (err, res) {
-        if (err) throw err;
-
-        console.table(res);
-    })
-    connection.end();
-}
-
-function viewEmployeesByDept() {
-    var query = "SELECT department.name as department, employee.first_name, employee.last_name,role.title as title  from department LEFT JOIN role on department.id = role.department_id LEFT JOIN employee on employee.role_id = role.id;";
-    connection.query(query, function (err, res) {
-        if (err) throw err;
-
-        console.table(res);
-    })
-    connection.end();
-}
-
-
-function viewEmployeesByManager(){
-    var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.manager_id = employee.id LEFT JOIN department on employee.manager_id = employee.id";
-    connection.query(query, function (err, res) {
-        if (err) throw err;
-
-        console.table(res);
-    })
-    connection.end();
-}
 
 function addNewEmployee(resEmp){
     inquirer.prompt([
@@ -250,7 +219,7 @@ function addNewEmployee(resEmp){
                     //Left hand side of colon is the column name in table
                     first_name: answer.fname,
                     last_name: answer.lname,
-                     manager_id : answer.empManager,
+                    manager_id : answer.empManager,
                     role_id: answer.roleId
                 },
                 function (err) {
@@ -262,9 +231,8 @@ function addNewEmployee(resEmp){
 
         })
         .catch(error => {
-            if (error) {
+            if (error) 
                 console.log("Error");
-            }
         });
 }
 function addNewManager(resDept){
@@ -310,26 +278,54 @@ function addNewManager(resDept){
     });
 }
 
+}
 
-    //View employee by DEPARTMENT
-    // function viewAllEmployees(){
-    //     var query = "SELECT * FROM employee  WHERE ";
-    //     connection.query(query, function(err,res){
-    //         if(err) throw err;
-    //         for(var i = 0 ; i<res.length ; i++){
-    //             console.table(
-    //                 [
-    //                     {
-    //                         id : res[i].id,
-    //                         FirstName : res[i].first_name,
-    //                         LastName : res[i].last_name,
-    //                         RoleId : res[i].role_id,
-    //                         ManagerId : res[i].manager_id,
-    //                         DepartmentName : res[i].department_name
-    //                     }
-    //                 ]
-    //             );
-    //         }
-    //     })
-    //     connection.end();
-    // }
+
+
+
+
+function viewAllEmployees() {
+    var query = "SELECT id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID FROM employee ";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+    connection.end();
+}
+
+function viewEmployeesByDept() {
+    var query = "SELECT department.name as department, employee.first_name, employee.last_name,role.title as title  from department LEFT JOIN role on department.id = role.department_id LEFT JOIN employee on employee.role_id = role.id;";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+    connection.end();
+}
+
+
+function viewEmployeesByManager(){
+    var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.manager_id = employee.id LEFT JOIN department on employee.manager_id = employee.id";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+    })
+    connection.end();
+}
+
+
+function updateEmployeeRole(){
+    inquirer.prompt([
+        {
+            name :"update",
+            type : "input" ,
+            message: "Enter employee id to update the role..."
+        }
+    ])
+    .then(function (answer) {
+        console.log(answer);
+});
+}
+ 
