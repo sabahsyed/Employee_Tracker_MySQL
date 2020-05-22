@@ -374,7 +374,7 @@ function add(){
 
 
 function viewAllEmployees() {
-    var query = "SELECT employee.id as ID, first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID FROM employee left join role on employee.role_id = role.id left join department on role.department_id = department.id";
+    var query = "select employee.first_name,employee.last_name,role.id,title,salary,department.name from employee left join role on employee.role_id = role.id  left join  department on  role.department_id = department.id;"
     connection.query(query, function (err, res) {
         if (err) throw err;
 
