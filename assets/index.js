@@ -374,7 +374,7 @@ function add(){
 
 
 function viewAllEmployees() {
-    var query = "select employee.first_name,employee.last_name,role.id,title,salary,department.name from employee left join role on employee.role_id = role.id  left join  department on  role.department_id = department.id;"
+    var query = "select * from employee inner join role on employee.role_id = role.id right join department on role.department_id = department.id;";
     connection.query(query, function (err, res) {
         if (err) throw err;
 
@@ -384,7 +384,8 @@ function viewAllEmployees() {
 }
 
 function viewEmployeesByDept() {
-    var query = "SELECT department.name as department, employee.first_name, employee.last_name,role.title as title  from department LEFT JOIN role on department.id = role.department_id LEFT JOIN employee on employee.role_id = role.id;";
+    var query = "SELECT employee.first_name, employee.last_name,role.title as title,department.name as department from employee inner JOIN role on employee.role_id = role.id inner JOIN department on role.department_id = department.id;";
+   
     connection.query(query, function (err, res) {
         if (err) throw err;
 
@@ -395,13 +396,13 @@ function viewEmployeesByDept() {
 
 
 function viewEmployeesByManager() {
-    var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.manager_id = employee.id LEFT JOIN department on employee.manager_id = employee.id";
+    var query =  "select * from employee where employee.id = employee.manager_id;";
     connection.query(query, function (err, res) {
         if (err) throw err;
 
         console.table(res);
     })
-    connection.end();
+    start();
 }
 
 
@@ -423,7 +424,7 @@ function updateEmployeeRole() {
                         console.table("This is res" + JSON.stringify(res));
                         var queryRes =  "Update "
                     })
-                        connection.end();
+                      start();
             });
 });
 }
