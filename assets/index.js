@@ -182,6 +182,12 @@ function addEmployee() {
 
 
     function addNewEmployee(resEmp) {
+        let deptArray = null;
+        connection.query("SELECT * FROM department", function (err, dept) {
+            if (err) throw err;
+            console.log("This is dept ARRaY" +JSON.stringify(dept));
+            deptArray = dept;
+
         inquirer.prompt([
             {
                 name: "fname",
@@ -208,7 +214,19 @@ function addEmployee() {
                         value: employee.id
                     }
                 })
-            }
+            },
+            {
+                name:"empDept",
+                type :"input",
+                message: "To which department should the employee be added to?",
+                choices: deptArray.map(dept => {
+                    return {
+                        name: dept.name,
+                        value: dept.id
+                    }
+                })
+
+            },
 
         ])
             .then(function (answer) {
@@ -225,6 +243,7 @@ function addEmployee() {
                     function (err) {
                         if (err) throw err;
                         console.log("1 record inserted into Employee as Employee");
+                        process.exit(0);
                     }
                 );
 
@@ -234,10 +253,56 @@ function addEmployee() {
                 if (error)
                     console.log("Error");
             });
-    }
+    })
+}
     function addNewManager(resDept) {
 
-        console.log(resDept);
+    //     console.log(resDept);
+    //     inquirer.prompt([
+    //         {
+    //             name: "fname",
+    //             type: "input",
+    //             message: " What is Manager's first name ?",
+    //         },
+    //         {
+    //             name: "lname",
+    //             type: "input",
+    //             message: " What is Manager's last name ?",
+    //         },
+    //         {
+    //             name: "deptName",
+    //             type: "list",
+    //             message: "What department would you like to add ? ",
+    //             choices: 
+    //             resDept.map(department => {
+    //                 return {
+    //                     name: department.name,
+    //                     value: department.id,
+    //                 }
+    //             })
+                    
+    //         }
+    //     ])
+    //         .then(function (answer) {
+    //             connection.query(
+    //                 "INSERT INTO employee SET ?",
+    //                 {
+    //                     //Left hand side of colon is the column name in table
+    //                     first_name: answer.fname,
+    //                     last_name: answer.lname,
+    //                 },
+    //                 function (err) {
+    //                     if (err) throw err;
+    //                     console.log("1 record inserted into Employee as Manager");
+    //                     process.exit(0);
+    //                     return
+                        
+    //                 }
+    //             );
+
+    //         });
+    // }
+    console.log(resDept);
         inquirer.prompt([
             {
                 name: "fname",
@@ -255,9 +320,10 @@ function addEmployee() {
                 message: "What is the department name?",
                 choices:
                     resDept.map(department => {
+                        console.log(department)
                         return {
-                            name: department.name,
-                            value: department.id
+                            name: department.Role,
+                            value: department.RoleID
                         }
                     })
             }
@@ -269,24 +335,46 @@ function addEmployee() {
                         //Left hand side of colon is the column name in table
                         first_name: answer.fname,
                         last_name: answer.lname,
+                        role_id: answer.deptName
                     },
                     function (err) {
                         if (err) throw err;
                         console.log("1 record inserted into Employee as Manager");
-                        return
+                        
                     }
                 );
-
             });
     }
 }
 
 
+function add(){
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "dept",
+            message: "What department would you like to add?",
+        },
+    ]).then(createPrompt => {
+        connection.query(
+            "INSERT INTO department SET ?",
+            [
+                {
+                    name: createPrompt.dept
+                }
+            ],
+            function (err, resTwo) {
+                if (err) throw err;
+                console.log("A new department has been added")
 
+            }
+        );
+    });
+}
 
 
 function viewAllEmployees() {
-    var query = "SELECT id , first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID FROM employee ";
+    var query = "SELECT employee.id as ID, first_name as FirstName , last_name as LastName , role_id as RoleID , manager_id as ManagerID FROM employee left join role on employee.role_id = role.id left join department on role.department_id = department.id";
     connection.query(query, function (err, res) {
         if (err) throw err;
 
@@ -326,24 +414,19 @@ function updateEmployeeRole() {
         }
     ])
         .then(function (answer) {
-            console.log(answer);
-        });
+            console.log("This is answer from prompt "+ JSON.stringify(answer));
+            var query = "SELECT employee.id , first_name as FirstName , last_name as LastName , role_id as RoleID, role.title as title, department.name as department FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id";
+            connection.query(query, function (err, res) {
+                if (err) throw err;
+                connection.query(query, function (err, res) {
+                    if (err) throw err;
+                        console.table("This is res" + JSON.stringify(res));
+                        var queryRes =  "Update "
+                    })
+                        connection.end();
+            });
+});
 }
 // function addDeptToManager() {
-//     var query = "SELECT NAME from DEPARTMENT";
-//     connection.query(query, function (err, res) {
-//         if (err) throw err;
-//             inquirer.prompt([
-//                 {
-//                     name: "deptName",
-//                     type: "list",
-//                     message: "Choose the department name.",
-//                     choices:
-//                         res.map(department => {
-//                         console.log(department)
-//                     })
-//                  }
 
-//             ])
-//     });  
 // }
