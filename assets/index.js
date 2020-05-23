@@ -169,7 +169,6 @@ function addEmployee() {
                 case "Add Employee":
                     connection.query("SELECT * FROM employee", function (err, resEmp) {
                         if (err) throw err;
-                        console.log(resEmp);
                         addNewEmployee(resEmp);
 
                     });
